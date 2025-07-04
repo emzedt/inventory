@@ -133,3 +133,5 @@ Memastikan pengelolaan stok barang berjalan **efisien**, mulai dari **penerimaan
 * Proses bisnis ini mendukung integrasi dengan modul pembelian dan penjualan lainnya.
 
 ---
+
+<img src="Downloads/ERD Revisi.drawio.png" alt="Diagram Inventory" width="500"/>
