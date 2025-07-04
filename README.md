@@ -134,4 +134,4 @@ Memastikan pengelolaan stok barang berjalan **efisien**, mulai dari **penerimaan
 
 ---
 
-<img src="Downloads/ERD Revisi.drawio.png" alt="Diagram Inventory" width="500"/>
+<img src="public/erd-inventory.png" alt="Diagram Inventory" style="max-width:100%; height:auto;"/>
