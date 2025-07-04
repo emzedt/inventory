@@ -1,66 +1,135 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 Proses Bisnis Inventory Stok Barang
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dokumentasi ini menjelaskan alur proses pengelolaan stok barang dalam sistem inventory, mulai dari penerimaan barang hingga audit dan reorder, untuk memastikan pengelolaan stok berjalan efisien dan akurat.
 
-## About Laravel
+## 🎯 Tujuan
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Memastikan pengelolaan stok barang berjalan **efisien**, mulai dari **penerimaan**, **penyimpanan**, hingga **pengeluaran barang**, dengan dukungan monitoring otomatis dan pelaporan yang akurat.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 1️⃣ Penerimaan Barang (Barang Masuk)
 
-## Learning Laravel
+### ✅ Input
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* Dokumen pembelian (PO / Invoice)
+* Barang fisik yang diterima dari supplier
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### ⚙️ Proses
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Gudang menerima barang berdasarkan PO.
+2. Pemeriksaan kualitas dan kuantitas barang.
+3. Jika sesuai:
 
-## Laravel Sponsors
+   * Data dicatat ke **modul Barang Masuk**:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+     * Jumlah barang
+     * Tanggal masuk
+     * Nama supplier
+   * Update stok di **modul Stok Barang**.
 
-### Premium Partners
+### 📤 Output
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+* **Stok barang** ter-update.
+* **Dokumen GRN (Goods Received Note)** dihasilkan.
+* Jika barang rusak/tidak sesuai, dibuat **laporan klaim ke supplier**.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 2️⃣ Penyimpanan dan Monitoring Stok
 
-## Code of Conduct
+### ✅ Input
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Data barang dari penerimaan
+* Parameter **stok minimum (threshold)**
 
-## Security Vulnerabilities
+### ⚙️ Proses
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Barang disimpan di lokasi gudang yang ditentukan.
+2. Sistem secara otomatis memonitor ketersediaan stok.
+3. Jika stok mendekati batas minimum:
 
-## License
+   * Sistem mengirim **notifikasi reorder** ke admin gudang.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 📤 Output
+
+* Posisi dan saldo stok barang selalu **ter-update**.
+* **Notifikasi reorder** jika stok menipis.
+
+---
+
+## 3️⃣ Pengeluaran Barang (Barang Keluar)
+
+### ✅ Input
+
+* Permintaan barang dari divisi / cabang / pelanggan
+* Dokumen pengeluaran (Delivery Order)
+
+### ⚙️ Proses
+
+1. Divisi mengajukan permintaan barang.
+2. Admin gudang memverifikasi ketersediaan stok.
+3. Barang dikeluarkan dan dicatat dalam **modul Barang Keluar**:
+
+   * Jumlah barang keluar
+   * Tanggal pengeluaran
+   * Tujuan pengeluaran
+4. Update stok di **modul Stok Barang**.
+
+### 📤 Output
+
+* Data tercatat di **Tabel Barang Keluar**
+* **Stok berkurang**
+* **Dokumen DO** (Delivery Order) dihasilkan
+
+---
+
+## 4️⃣ Audit dan Pelaporan
+
+### ✅ Input
+
+* Data stok (masuk, keluar, saldo)
+* Parameter waktu (harian/mingguan/bulanan)
+
+### ⚙️ Proses
+
+1. Sistem menghasilkan laporan dari **modul Laporan Stok**:
+
+   * Pergerakan stok
+   * Stok akhir per periode
+   * Lokasi penyimpanan
+2. **Audit fisik berkala** untuk validasi dengan data sistem
+
+### 📤 Output
+
+* Laporan stok barang (PDF / Excel)
+* Identifikasi selisih jika terdapat ketidaksesuaian
+
+---
+
+## 5️⃣ Reorder Barang
+
+### ✅ Input
+
+* **Notifikasi stok minimum** dari sistem
+
+### ⚙️ Proses
+
+1. Sistem memberikan peringatan restock
+2. Admin gudang membuat **PO baru** ke supplier
+3. Proses kembali ke **penerimaan barang**
+
+### 📤 Output
+
+* Purchase Order (PO) baru ke supplier
+* Barang diterima dan **stok diperbarui kembali**
+
+---
+
+## 📌 Catatan Tambahan
+
+* Semua data dicatat dan dimonitor secara real-time melalui sistem informasi inventory.
+* Audit fisik dan sistem saling melengkapi untuk menjaga akurasi data.
+* Proses bisnis ini mendukung integrasi dengan modul pembelian dan penjualan lainnya.
+
+---
